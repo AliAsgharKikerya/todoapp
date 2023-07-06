@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Todo List</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <h1>Todo List</h1>
+
+  <form id="todoForm">
+    <input type="text" id="taskInput" placeholder="Enter a task">
+    <button type="submit">Add</button>
+  </form>
+
+  <ul id="taskList"></ul>
+
+  <script>
+    // Retrieve tasks from local storage
+    var tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    // Function to render tasks
+    function renderTasks() {
+      var taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+
+      tasks.forEach(function(task, index) {
+        var li = document.createElement('li');
+        li.textContent = task;
+
+        var deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', function() {
+          // Remove task from the array and update local storage
+          tasks.splice(index, 1);
+          localStorage.setItem('tasks', JSON.stringify(tasks));
+          renderTasks();
+        });
+
+        li.appendChild(deleteButton);
+        taskList.appendChild(li);
+      });
+    }
+
+    // Add task to the list
+    document.getElementById('todoForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var taskInput = document.getElementById('taskInput');
+      var task = taskInput.value.trim();
+
+      if (task) {
+        tasks.push(task);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        renderTasks();
+        taskInput.value = '';
+      }
+    });
+        
+    // Initial rendering of tasks
+    renderTasks();
+  </script>
+</body>
+</html>
